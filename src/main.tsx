@@ -6,6 +6,8 @@ import { ZeroProvider } from "@rocicorp/zero/react";
 import { Zero } from "@rocicorp/zero";
 import { schema } from "../schema.ts";
 
+// TODO: Set Up AUTH
+
 const z = new Zero({
   userID: "anon",
   server: "https://localhost:4848",
