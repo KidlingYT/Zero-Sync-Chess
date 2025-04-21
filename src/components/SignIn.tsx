@@ -3,9 +3,11 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
-// TODO: Replace with actual authentication logic
-
 const SignIn = () => {
+  async function SignInUser() {
+    await fetch("/api/login");
+    location.reload();
+  }
   return (
     <div className="flex items-center justify-center">
       <Card className="w-full max-w-md shadow-md">
@@ -34,7 +36,13 @@ const SignIn = () => {
                 className="mt-1"
               />
             </div>
-            <Button type="submit" className="w-full">
+            <Button
+              type="submit"
+              className="w-full"
+              onClick={() => {
+                SignInUser();
+              }}
+            >
               Sign In
             </Button>
           </form>
