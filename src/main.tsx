@@ -5,13 +5,19 @@ import App from "./App.tsx";
 import { ZeroProvider } from "@rocicorp/zero/react";
 import { Zero } from "@rocicorp/zero";
 import { schema } from "../schema.ts";
+import Cookies from "js-cookie";
+import { decodeJwt } from "jose";
 
-// TODO: Set Up AUTH
+const encodedJWT = Cookies.get("jwt");
+const decodedJWT = encodedJWT && decodeJwt(encodedJWT);
+const userID = decodedJWT?.sub ? (decodedJWT.sub as string) : "anon";
 
 const z = new Zero({
-  userID: "anon",
+  userID: userID,
+  auth: () => encodedJWT,
   server: "https://localhost:4848",
   schema,
+  kvStore: "idb",
 });
 
 createRoot(document.getElementById("root")!).render(
