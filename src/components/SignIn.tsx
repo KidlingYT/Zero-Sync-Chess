@@ -4,7 +4,7 @@ import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
 const SignIn = () => {
-  async function SignUserIn() {
+  async function SignInUser() {
     await fetch("/api/login");
     location.reload();
   }
@@ -37,9 +37,10 @@ const SignIn = () => {
               />
             </div>
             <Button
+              type="submit"
               className="w-full"
               onClick={() => {
-                SignUserIn();
+                SignInUser();
               }}
             >
               Sign In

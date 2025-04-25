@@ -5,16 +5,16 @@ import App from "./App.tsx";
 import { ZeroProvider } from "@rocicorp/zero/react";
 import { Zero } from "@rocicorp/zero";
 import { schema } from "../schema.ts";
-import Cookies from "js-cookie";
 import { decodeJwt } from "jose";
+import Cookie from "js-cookie";
 
-const encodedJWT = Cookies.get("jwt");
-const decodedJWT = encodedJWT && decodeJwt(encodedJWT);
-const userID = decodedJWT?.sub ? (decodedJWT.sub as string) : "anon";
+const encodedJwtToken = Cookie.get("jwt");
+const decodedJwtToken = encodedJwtToken && decodeJwt(encodedJwtToken);
+const userID = decodedJwtToken?.sub ? (decodedJwtToken.sub as string) : "anon";
 
 const z = new Zero({
-  userID: userID,
-  auth: () => encodedJWT,
+  userID,
+  auth: () => encodedJwtToken,
   server: "https://localhost:4848",
   schema,
   kvStore: "idb",
