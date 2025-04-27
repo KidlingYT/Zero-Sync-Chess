@@ -9,8 +9,9 @@ export const config = {
 
 export const app = new Hono().basePath("/api");
 
-// This is temporary, eventually let's do this from the database...
-const userIDs = ["elijahsymonsid"];
+// TODO: This is temporary, eventually let's do this from the database...
+// TODO: Add the create account endpoint
+const userIDs = ["7VoEoJWEwn"];
 
 app.get("/login", async (c) => {
   const jwtPayload = {
