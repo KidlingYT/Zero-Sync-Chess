@@ -15,3 +15,7 @@ Zero Sync is Rocicorp's
 https://zero.rocicorp.dev/
 
 App is **Courtesy of Symons**
+
+### Helpful Resources:
+
+- https://medium.com/@ValentinMouret/simple-authentication-with-only-postgresql-ff38f5bf8b0d
