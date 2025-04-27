@@ -1,17 +1,21 @@
 import "./App.css";
-import { useQuery, useZero } from "@rocicorp/zero/react";
-import SignIn from "./components/SignIn";
-import Header from "./components/Header";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
+import SignInPage from "./pages/SignInPage";
+import SignUpPage from "./pages/SignUpPage";
+import ChessBoardPage from "./pages/ChessBoardPage";
+import AccountPage from "./pages/Account";
 
 function App() {
-  const z = useZero();
-  const [chessUsers] = useQuery(z.query.zChessUser);
-  console.log(chessUsers);
   return (
-    <main className="flex flex-col items-center">
-      <Header />
-      <SignIn />
-    </main>
+    <BrowserRouter>
+      <Routes>
+        <Route path="/" element={<SignInPage />}></Route>
+        <Route path="/signin" element={<SignInPage />}></Route>
+        <Route path="/signup" element={<SignUpPage />}></Route>
+        <Route path="/chessboard" element={<ChessBoardPage />}></Route>
+        <Route path="/account" element={<AccountPage />}></Route>
+      </Routes>
+    </BrowserRouter>
   );
 }
 

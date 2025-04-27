@@ -2,11 +2,14 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-
+import { useNavigate } from "react-router-dom";
 const SignIn = () => {
+  const navigate = useNavigate();
+
   async function SignInUser() {
     await fetch("/api/login");
-    location.reload();
+    // TODO: authenticate
+    navigate("/chessboard");
   }
   return (
     <div className="flex items-center justify-center">
@@ -57,5 +60,4 @@ const SignIn = () => {
     </div>
   );
 };
-
 export default SignIn;
