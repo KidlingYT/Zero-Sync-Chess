@@ -1,31 +1,52 @@
 import { Button } from "@/components/ui/button";
 import { useZero } from "@rocicorp/zero/react";
-import { useEffect, useState } from "react";
 import { FaChessKnight } from "react-icons/fa";
+import { CgProfile } from "react-icons/cg";
+import { useNavigate } from "react-router-dom";
+import { useEffect, useState } from "react";
 
 const Header = () => {
-  const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false);
   const z = useZero();
+
+  const [isUserSignedIn, setIsUserSignedIn] = useState<boolean>(false);
+
   useEffect(() => {
-    if (z.userID !== "anon") setIsLoggedIn(true);
-  }, []);
+    if (z.userID === "anon") {
+      setIsUserSignedIn(false);
+    } else setIsUserSignedIn(true);
+  }, [z.userID]);
+
+  const navigate = useNavigate();
+
+  function handleNavigate(path: string) {
+    navigate(path);
+  }
   return (
     <header className="w-full border-b-2 border-gray-100 z-10 fixed top-0 left-0">
       <div className="flex items-center justify-between px-4 py-2">
-        <div className="flex items-center space-x-2">
+        <div
+          className="flex items-center space-x-2"
+          onClick={() => handleNavigate("/")}
+        >
           <FaChessKnight className="text-2xl" />
           <span className="text-xl font-bold">ZChess</span>
         </div>
-        <div className="text-xl">
-          {isLoggedIn ? (
-            <span className="text-green-500">Logged in ✔ {z.userID}</span>
-          ) : (
-            <span className="text-red-500">Unauthenticated {z.userID}</span>
-          )}
-        </div>
-        <Button variant="ghost" className="bg-white!">
-          Sign In
-        </Button>
+        {isUserSignedIn === false && (
+          <Button
+            variant="ghost"
+            className="bg-white!"
+            onClick={() => handleNavigate("/signin")}
+          >
+            Sign In
+          </Button>
+        )}
+        {isUserSignedIn === true && (
+          <CgProfile
+            onClick={() => navigate("/account")}
+            size={30}
+            className="cursor-pointer"
+          />
+        )}
       </div>
     </header>
   );

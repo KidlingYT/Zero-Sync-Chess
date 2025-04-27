@@ -15,8 +15,9 @@ const userID = decodedJwtToken?.sub ? (decodedJwtToken.sub as string) : "anon";
 const z = new Zero({
   userID,
   auth: () => encodedJwtToken,
-  server: "https://localhost:4848",
+  server: "http://localhost:4848",
   schema,
+  kvStore: "idb",
 });
 
 createRoot(document.getElementById("root")!).render(

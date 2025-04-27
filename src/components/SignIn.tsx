@@ -2,11 +2,14 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-
+import { useNavigate } from "react-router-dom";
 const SignIn = () => {
+  const navigate = useNavigate();
+
   async function SignInUser() {
     await fetch("/api/login");
-    location.reload();
+    // TODO: authenticate
+    navigate("/chessboard");
   }
   return (
     <div className="flex items-center justify-center">
@@ -17,7 +20,7 @@ const SignIn = () => {
           </CardTitle>
         </CardHeader>
         <CardContent>
-          <form className="space-y-4">
+          <div className="space-y-4">
             <div>
               <Label htmlFor="email">Email</Label>
               <Input
@@ -45,7 +48,7 @@ const SignIn = () => {
             >
               Sign In
             </Button>
-          </form>
+          </div>
           <p className="mt-4 text-center text-sm text-gray-600">
             Don't have an account?{" "}
             <a href="/signup" className="text-blue-600 hover:underline">
@@ -57,5 +60,4 @@ const SignIn = () => {
     </div>
   );
 };
-
 export default SignIn;
