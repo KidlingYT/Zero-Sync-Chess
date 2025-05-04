@@ -10,19 +10,22 @@ import {
 } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { useZero } from "@rocicorp/zero/react";
 
 export function SignUp() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [name, setName] = useState("");
 
+  const z = useZero();
+
   const [isLoading, setIsLoading] = useState(false);
 
   const handleSubmit = async (event: FormEvent) => {
     event.preventDefault();
     setIsLoading(true);
-    // TODO: actually sign up
-    await new Promise((resolve) => setTimeout(resolve, 1500));
+    z.mutate.users.insert({ email: email, password: password, name: name });
+
     setIsLoading(false);
   };
 
