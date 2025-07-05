@@ -17,8 +17,6 @@ export function SignUp() {
     const [password, setPassword] = useState("");
     const [name, setName] = useState("");
 
-    const z = useZero();
-
     const [isLoading, setIsLoading] = useState(false);
 
     const z = useZero();
