@@ -7,6 +7,7 @@ import { Zero } from "@rocicorp/zero";
 import { schema } from "../schema.ts";
 import { decodeJwt } from "jose";
 import Cookie from "js-cookie";
+import { Toaster } from "@/components/ui/sonner";
 
 const encodedJwtToken = Cookie.get("jwt");
 const decodedJwtToken = encodedJwtToken && decodeJwt(encodedJwtToken);
@@ -24,6 +25,7 @@ createRoot(document.getElementById("root")!).render(
   <StrictMode>
     <ZeroProvider zero={z}>
       <App />
+      <Toaster />
     </ZeroProvider>
   </StrictMode>
 );

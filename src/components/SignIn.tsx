@@ -3,11 +3,19 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useNavigate } from "react-router-dom";
+import { useState } from "react";
 const SignIn = () => {
   const navigate = useNavigate();
 
+  const [email, setEmail] = useState<string>("");
+  const [password, setPassword] = useState<string>("");
+
   async function SignInUser() {
-    await fetch("/api/login");
+    await fetch("/api/login", {
+      // method: "POST",
+      // headers: { "content-type": "application/json" },
+      // body: JSON.stringify({ email, password }),
+    });
     // TODO: authenticate
     navigate("/chessboard");
   }
@@ -28,6 +36,8 @@ const SignIn = () => {
                 type="email"
                 placeholder="Enter your email"
                 className="mt-1"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
               />
             </div>
             <div>
@@ -37,6 +47,8 @@ const SignIn = () => {
                 type="password"
                 placeholder="Enter your password"
                 className="mt-1"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
               />
             </div>
             <Button
