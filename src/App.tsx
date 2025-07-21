@@ -4,22 +4,25 @@ import SignInPage from "./pages/SignInPage";
 import SignUpPage from "./pages/SignUpPage";
 import ChessBoardPage from "./pages/ChessBoardPage";
 import AccountPage from "./pages/Account";
-import NoAuthPage from "./pages/NoAuthPage";
 import MatchingPage from "./pages/MatchingPage";
+import NoAuthPage from "./pages/NoAuthPage";
 
 function App() {
-  return (
-    <BrowserRouter>
-      <Routes>
-        <Route path="/" element={<NoAuthPage />}></Route>
-        <Route path="/signin" element={<SignInPage />}></Route>
-        <Route path="/matching" element={<MatchingPage />} />
-        <Route path="/signup" element={<SignUpPage />}></Route>
-        <Route path="/chessboard" element={<ChessBoardPage />}></Route>
-        <Route path="/account" element={<AccountPage />}></Route>
-      </Routes>
-    </BrowserRouter>
-  );
+    return (
+        <BrowserRouter>
+            <Routes>
+                <Route path="/signin" element={<SignInPage />}></Route>
+                <Route path="/matching" element={<MatchingPage />} />
+                <Route path="/" element={<SignUpPage />}></Route>
+                <Route
+                    path="/game/:gameId"
+                    element={<ChessBoardPage />}
+                ></Route>
+                <Route path="/account" element={<AccountPage />}></Route>
+                <Route path="/username" element={<NoAuthPage />}></Route>
+            </Routes>
+        </BrowserRouter>
+    );
 }
 
 export default App;
