@@ -1,4 +1,4 @@
-Create Table chess_games {
+CREATE TABLE chess_games {
     id INT IDENTITY(1,1) PRIMARY KEY
     whitePlayerName NVARCHAR NOT NULL
     blackPlayerName NVARCHAR NOT NULL
@@ -16,13 +16,3 @@ CREATE TABLE users {
     email NVARCHAR PRIMARY KEY
     password NVARCHAR NOT NULL
 }
-
-create function authenticate_user(email text, pass text)
-  returns boolean
-  language sql
-  immutable
-  returns null on null input
-  return (select true
-            from users
-           where email = email
-             and password = crypt(pass, password));
