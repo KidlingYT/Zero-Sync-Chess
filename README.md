@@ -59,3 +59,5 @@ npm run dev
 - https://medium.com/@ValentinMouret/simple-authentication-with-only-postgresql-ff38f5bf8b0d
 - https://dev.to/tyry327/create-a-chess-game-with-react-and-chessboardjsx-214e
 - https://www.youtube.com/channel/UC_Pw1f_zuZPizv-4TwVrHyw
+- https://dev.to/tyry327/create-a-chess-game-with-react-and-chessboardjsx-214e
+- https://www.npmjs.com/package/react-chessboard
