@@ -11,6 +11,12 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useZero } from "@rocicorp/zero/react";
+import { createClient } from "@supabase/supabase-js";
+import { toast } from "sonner";
+const supabase = createClient(
+    import.meta.env.VITE_SUPABASE_URL,
+    import.meta.env.VITE_SUPABASE_ANON_KEY
+);
 
 export function SignUp() {
     const [email, setEmail] = useState("");
@@ -24,17 +30,39 @@ export function SignUp() {
     const handleSubmit = async (event: FormEvent) => {
         event.preventDefault();
         setIsLoading(true);
+        signUpNewUser();
         z.mutate.users.insert({ email: email, password: password, name: name });
 
         setIsLoading(false);
     };
+
+    async function signUpNewUser() {
+        const { data, error } = await supabase.auth.signUp({
+            email,
+            password,
+            options: {
+                emailRedirectTo: import.meta.env.DEV
+                    ? "http://localhost:5173/chessboard"
+                    : "http://localhost:5173/chessboard",
+            },
+        });
+
+        if (error)
+            toast.error("Error", {
+                description: error.code + "." + error.message,
+            });
+        else
+            toast.success("Success", {
+                description: "Account Created Successfully",
+            });
+    }
 
     return (
         <Card className="w-full max-w-sm">
             <CardHeader className="space-y-1 text-center">
                 <CardTitle className="text-2xl">Create an account</CardTitle>
                 <CardDescription>
-                    Enter your email below to create your zchess account
+                    Enter your email to create your bulletchess account
                 </CardDescription>
             </CardHeader>
             <CardContent className="grid gap-4">

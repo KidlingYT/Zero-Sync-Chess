@@ -5,8 +5,8 @@ import {
     definePermissions,
     ANYONE_CAN_DO_ANYTHING,
     PermissionsConfig,
-    number,
     boolean,
+    number,
 } from "@rocicorp/zero";
 
 type Authdata = {
@@ -23,11 +23,13 @@ const users = table("users")
 
 const chess_games = table("chess_games")
     .columns({
-        id: number(),
+        id: string(),
         whitePlayerName: string(),
         blackPlayerName: string(),
         fen: string(),
         is_active: boolean(),
+        whiteTime: number(), // in seconds
+        blackTime: number(), // in seconds
     })
     .primaryKey("id");
 
