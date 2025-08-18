@@ -16,7 +16,6 @@ const MatchingPage = () => {
     const navigate = useNavigate();
     const [selectedMode, setSelectedMode] = useState<Mode>();
     const [isSearching, setIsSearching] = useState<boolean>(false);
-    const [secondsLeftToSearch, setSecondsLeftToSearch] = useState<number>(30);
     const [timerIntervalId, setTimerIntervalId] = useState();
     const username = useUsername();
 
@@ -25,8 +24,8 @@ const MatchingPage = () => {
         setIsSearching(true);
         let timeRemaining = 30;
         const intervalId = setInterval(() => {
-            setSecondsLeftToSearch(timeRemaining--);
             if (timeRemaining <= 0) {
+                timeRemaining--;
                 clearInterval(intervalId);
                 setIsSearching(false);
                 // todo go to ai game
@@ -59,7 +58,6 @@ const MatchingPage = () => {
     }
     function stopSearching() {
         setIsSearching(false);
-        setSecondsLeftToSearch(30);
         clearInterval(timerIntervalId);
     }
     function deSelectMode() {
