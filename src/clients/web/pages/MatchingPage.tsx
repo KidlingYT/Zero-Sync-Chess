@@ -1,7 +1,7 @@
 import Header from "@/components/Header";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { BLANKFEN } from "@/clients/web/lib/chessGame";
+import { BLANKFEN } from "@/lib/chessGame";
 import { useZero } from "@rocicorp/zero/react";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";

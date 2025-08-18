@@ -8,7 +8,7 @@ import { useParams } from "react-router-dom";
 import { useQuery, useZero } from "@rocicorp/zero/react";
 import { Schema } from "schema";
 import { useNavigate } from "react-router-dom";
-import { BLANKFEN } from "@/clients/web/lib/chessGame";
+import { BLANKFEN } from "@/lib/chessGame";
 
 const Home = () => {
     const params = useParams();
