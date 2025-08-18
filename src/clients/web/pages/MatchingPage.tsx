@@ -1,8 +1,7 @@
 import Header from "@/components/Header";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { useUsername } from "@/hooks/useAuth";
-import { BLANKFEN } from "@/lib/chessGame";
+import { BLANKFEN } from "@/clients/web/lib/chessGame";
 import { useZero } from "@rocicorp/zero/react";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
@@ -17,7 +16,6 @@ const MatchingPage = () => {
     const [selectedMode, setSelectedMode] = useState<Mode>();
     const [isSearching, setIsSearching] = useState<boolean>(false);
     const [timerIntervalId, setTimerIntervalId] = useState();
-    const username = useUsername();
 
     function startSearching() {
         // todo api
@@ -47,7 +45,7 @@ const MatchingPage = () => {
         const gameId = uuid();
         zero.mutate.chess_games.insert({
             id: gameId,
-            whitePlayerName: username?.username ?? "anon",
+            whitePlayerName: "anon",
             blackPlayerName: "AI",
             is_active: true,
             fen: BLANKFEN,
