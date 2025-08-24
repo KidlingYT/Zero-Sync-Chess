@@ -22,7 +22,7 @@ const Header = () => {
         navigate(path);
     }
     return (
-        <header className="w-full shadow-sm z-10 fixed top-0 left-0 bg-linear-to-b from-neutral-800 to-neutral-900 text-white">
+        <header className="w-full  z-10 fixed top-0 left-0 bg-linear-to-b bg-none text-white">
             <div className="flex items-center justify-between px-4 py-2">
                 <div
                     className="flex items-center space-x-2"
