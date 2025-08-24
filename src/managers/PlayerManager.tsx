@@ -1,44 +1,44 @@
 // Player Manager encapsulates player volatility.
 
 // Client application volatility
-import DesktopApp from "@/clients/web/App";
-import { ZeroResource } from "@/resources/zeroSyncResource";
+import { create } from "zustand";
 
-const DEFAULTPLAYERVIEW: PlayerView = "Desktop";
+const DEFAULT_PLAYER_VIEW: PlayerView = "Desktop";
+const DEFAULT_RESOURCE_PROVIDER: ResourceProvider = "Zero";
 
 export type PlayerView = "Mobile" | "Desktop" | "Tablet";
+export type ResourceProvider = "Zero"; // TODO: provide multiple resource providers
 
 interface PlayerManagerProps {
-    PlayerView: PlayerView;
+    playerView: PlayerView;
+    resourceProvider?: ResourceProvider;
 }
 
 export class PlayerManager {
-    // default to desktop
-    private PlayerView: PlayerView = DEFAULTPLAYERVIEW;
+    private playerView: PlayerView = DEFAULT_PLAYER_VIEW;
+    private resourceProvider: ResourceProvider = DEFAULT_RESOURCE_PROVIDER;
 
     constructor(props: PlayerManagerProps) {
-        this.PlayerView = props.PlayerView;
+        this.playerView = props.playerView;
+        this.resourceProvider =
+            props?.resourceProvider ?? DEFAULT_RESOURCE_PROVIDER;
     }
 
-    ResourceAccessLayer({ children }: { children: React.ReactNode }) {
-        // default to using zero sync
-        return () => <ZeroResource>{children}</ZeroResource>;
+    getView(): PlayerView {
+        return this.playerView;
     }
 
-    RenderApp(): React.ReactNode {
-        switch (this.PlayerView) {
-            case "Mobile":
-                console.warn(
-                    "Mobile App not implemented yet. Defaulting to Dektop."
-                );
-                return <DesktopApp />;
-            case "Desktop":
-                return <DesktopApp />;
-            case "Tablet":
-                console.warn(
-                    "Mobile App not implemented yet. Defaulting to Dektop."
-                );
-                return <DesktopApp />;
-        }
+    getResourceProvider(): ResourceProvider {
+        return this.resourceProvider;
     }
 }
+
+interface PlayerManagerStore {
+    playerManager: PlayerManager | undefined;
+    setPlayerManager: (pm: PlayerManager | undefined) => void;
+}
+
+export const usePlayerManagerStore = create<PlayerManagerStore>((set) => ({
+    playerManager: undefined,
+    setPlayerManager: (pm) => set({ playerManager: pm }),
+}));

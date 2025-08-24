@@ -2,17 +2,22 @@ import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
 import "./index.css";
 import { isDesktop } from "react-device-detect";
-import { PlayerManager, PlayerView } from "./managers/PlayerManager";
+import {
+    PlayerManager,
+    PlayerView,
+    usePlayerManagerStore,
+} from "./managers/PlayerManager";
+import { ChessEngine } from "./engines/chessEngine";
 
 // Todo: implement Tablet
 const playerView: PlayerView = isDesktop ? "Desktop" : "Mobile";
 
-const playerManager = new PlayerManager({ PlayerView: playerView });
-const App = playerManager.RenderApp();
-const AppWithResource = playerManager.ResourceAccessLayer({ children: App });
+const playerManager = new PlayerManager({ playerView: playerView });
+
+usePlayerManagerStore.setState({ playerManager });
 
 createRoot(document.getElementById("root")!).render(
     <StrictMode>
-        <AppWithResource />
+        <ChessEngine />
     </StrictMode>
 );
