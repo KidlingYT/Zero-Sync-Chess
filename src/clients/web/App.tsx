@@ -7,7 +7,7 @@ import AccountPage from "./pages/Account";
 import MatchingPage from "./pages/MatchingPage";
 import NoAuthPage from "./pages/NoAuthPage";
 
-function App() {
+function DesktopApp() {
     return (
         <BrowserRouter>
             <Routes>
@@ -25,4 +25,4 @@ function App() {
     );
 }
 
-export default App;
+export default DesktopApp;

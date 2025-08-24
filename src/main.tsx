@@ -1,29 +1,18 @@
 import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
 import "./index.css";
-import App from "./clients/web/App.tsx";
-import { ZeroProvider } from "@rocicorp/zero/react";
-import { Zero } from "@rocicorp/zero";
-import { schema } from "../schema.ts";
-import { decodeJwt } from "jose";
-import Cookie from "js-cookie";
+import { isDesktop } from "react-device-detect";
+import { PlayerManager, PlayerView } from "./managers/PlayerManager";
 
-const encodedJwtToken = Cookie.get("jwt");
-const decodedJwtToken = encodedJwtToken && decodeJwt(encodedJwtToken);
-const userID = decodedJwtToken?.sub ? (decodedJwtToken.sub as string) : "anon";
+// Todo: implement Tablet
+const playerView: PlayerView = isDesktop ? "Desktop" : "Mobile";
 
-const z = new Zero({
-    userID,
-    auth: () => encodedJwtToken,
-    server: "http://localhost:4848",
-    schema,
-    kvStore: "idb",
-});
+const playerManager = new PlayerManager({ PlayerView: playerView });
+const App = playerManager.RenderApp();
+const AppWithResource = playerManager.ResourceAccessLayer({ children: App });
 
 createRoot(document.getElementById("root")!).render(
     <StrictMode>
-        <ZeroProvider zero={z}>
-            <App />
-        </ZeroProvider>
+        <AppWithResource />
     </StrictMode>
 );
