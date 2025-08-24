@@ -1,119 +1,103 @@
 import Header from "@/components/Header";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent } from "@/components/ui/card";
-import { BLANKFEN } from "@/lib/chessGame";
-import { useZero } from "@rocicorp/zero/react";
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
-import { Schema } from "schema";
-import { v4 as uuid } from "uuid";
 
-type Mode = "1" | "5";
+const BulletButton = ({
+    seconds,
+    selected,
+    onClick,
+}: {
+    seconds: number;
+    selected: boolean;
+    onClick: () => void;
+}) => {
+    return (
+        <svg
+            onClick={onClick}
+            width="120"
+            height="50"
+            viewBox="0 0 120 50"
+            className="cursor-pointer transition-transform hover:scale-105"
+        >
+            {/* Capsule body */}
+            <rect
+                x="20"
+                y="10"
+                width="80"
+                height="30"
+                rx="15"
+                fill={selected ? "#2563eb" : "#27272a"}
+                stroke={selected ? "#3b82f6" : "#3f3f46"}
+                strokeWidth="2"
+            />
+            {/* Pointed tip */}
+            <polygon
+                points="100,10 120,25 100,40"
+                fill={selected ? "#2563eb" : "#27272a"}
+                stroke={selected ? "#3b82f6" : "#3f3f46"}
+                strokeWidth="2"
+            />
+            {/* Text label */}
+            <text
+                x="60"
+                y="30"
+                textAnchor="middle"
+                alignmentBaseline="middle"
+                fill="white"
+                fontSize="16"
+                fontWeight="bold"
+                pointerEvents="none"
+            >
+                {seconds}s
+            </text>
+        </svg>
+    );
+};
 
 const MatchingPage = () => {
-    const zero = useZero<Schema>();
-    const navigate = useNavigate();
-    const [selectedMode, setSelectedMode] = useState<Mode>();
-    const [isSearching, setIsSearching] = useState<boolean>(false);
-    const [timerIntervalId, setTimerIntervalId] = useState();
+    const [selectedMode, setSelectedMode] = useState<number | null>(null);
+    const [isSearching, setIsSearching] = useState(false);
 
-    function startSearching() {
-        // todo api
-        setIsSearching(true);
-        let timeRemaining = 30;
-        const intervalId = setInterval(() => {
-            if (timeRemaining <= 0) {
-                timeRemaining--;
-                clearInterval(intervalId);
-                setIsSearching(false);
-                // todo go to ai game
-            }
+    const toggleMode = (mode: number) =>
+        setSelectedMode((prev) => (prev === mode ? null : mode));
 
-            if (timeRemaining < 27) {
-                // fake found game
-                const gameId = createGame(selectedMode === "1" ? 60 : 300);
-                stopSearching();
-                clearInterval(intervalId);
-                navigate(`/game/${gameId}`);
-            }
-        }, 1000);
+    const startSearching = () => setIsSearching(true);
+    const stopSearching = () => setIsSearching(false);
 
-        setTimerIntervalId(timerIntervalId);
-    }
+    const bulletModes = [15, 30, 60];
 
-    function createGame(timeControl: number): string {
-        const gameId = uuid();
-        zero.mutate.chess_games.insert({
-            id: gameId,
-            whitePlayerName: "anon",
-            blackPlayerName: "AI",
-            is_active: true,
-            fen: BLANKFEN,
-            whiteTime: timeControl,
-            blackTime: timeControl,
-        });
-        return gameId;
-    }
-    function stopSearching() {
-        setIsSearching(false);
-        clearInterval(timerIntervalId);
-    }
-    function deSelectMode() {
-        setSelectedMode(undefined);
-        stopSearching();
-    }
-    function selectMode(mode: Mode) {
-        setSelectedMode(mode);
-    }
     return (
-        <main className="absolute top-0 pt-16 left-0 flex flex-col justify-center items-center bg-neutral-900 w-screen h-screen">
+        <main className="absolute top-0 left-0 w-screen h-screen flex flex-col items-center bg-[url('../../../chess.jpg')] bg-no-repeat bg-cover bg-center bg-fixed">
             <Header />
-            {/* <p className="m-4">
-                Number of people searching for matches: {numPeopleSearching}
-            </p> */}
-            <div className="p-4 flex gap-4 items-center ">
-                <Card
-                    className="min-w-24 min-h-24 flex justify-center items-center hover:bg-gray-100 cursor-pointer"
-                    style={{
-                        backgroundColor:
-                            selectedMode === "1" ? "lightblue" : "",
-                    }}
-                    onClick={() =>
-                        selectedMode === "1" ? deSelectMode() : selectMode("1")
-                    }
-                >
-                    <CardContent>
-                        <p className="text-xl">{1} Minute Game</p>
-                    </CardContent>
-                </Card>
-                <Card
-                    className="min-w-24 min-h-24 flex justify-center items-center hover:bg-gray-100 cursor-pointer"
-                    style={{
-                        backgroundColor:
-                            selectedMode === "5" ? "lightblue" : "",
-                    }}
-                    onClick={() =>
-                        selectedMode === "5" ? deSelectMode() : selectMode("5")
-                    }
-                >
-                    <CardContent>
-                        <p className="text-xl">{5} Minute Game</p>
-                    </CardContent>
-                </Card>{" "}
+            <div className="my-auto">
+                <h2 className=" text-3xl font-bold text-white">
+                    Choose Your Bullet Mode
+                </h2>
+
+                <div className="flex gap-6 mt-8">
+                    {bulletModes.map((mode) => (
+                        <BulletButton
+                            key={mode}
+                            seconds={mode}
+                            selected={selectedMode === mode}
+                            onClick={() => toggleMode(mode)}
+                        />
+                    ))}
+                </div>
+
+                {selectedMode && (
+                    <Button
+                        className={`mt-10 px-10 py-4 text-lg font-medium transition-colors rounded-full
+            ${isSearching ? "bg-gray-600" : "bg-blue-600 hover:bg-blue-700"}
+          `}
+                        onClick={() =>
+                            isSearching ? stopSearching() : startSearching()
+                        }
+                    >
+                        {isSearching ? "Searching..." : "Find Bullet Match"}
+                    </Button>
+                )}
             </div>
-            {selectedMode !== null && (
-                <Button
-                    className="bg-blue-500! text-white hover:bg-blue-600! mt-4"
-                    onClick={() =>
-                        isSearching ? stopSearching() : startSearching()
-                    }
-                    style={{
-                        backgroundColor: isSearching ? "lightgrey" : "",
-                    }}
-                >
-                    {isSearching ? "Searching..." : "Search For Match"}
-                </Button>
-            )}
         </main>
     );
 };

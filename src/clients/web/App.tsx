@@ -14,6 +14,7 @@ function DesktopApp() {
                 <Route path="/signin" element={<SignInPage />}></Route>
                 <Route path="/matching" element={<MatchingPage />} />
                 <Route path="/" element={<SignUpPage />}></Route>
+                <Route path="/signup" element={<SignUpPage />}></Route>
                 <Route
                     path="/game/:gameId"
                     element={<ChessBoardPage />}
