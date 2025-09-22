@@ -13,10 +13,6 @@ import { Label } from "@/components/ui/label";
 import { useZero } from "@rocicorp/zero/react";
 import { createClient } from "@supabase/supabase-js";
 import { toast } from "sonner";
-const supabase = createClient(
-    import.meta.env.VITE_SUPABASE_URL,
-    import.meta.env.VITE_SUPABASE_ANON_KEY
-);
 
 export function SignUp() {
     const [email, setEmail] = useState("");
@@ -37,6 +33,10 @@ export function SignUp() {
     };
 
     async function signUpNewUser() {
+        const supabase = createClient(
+            import.meta.env.VITE_SUPABASE_URL,
+            import.meta.env.VITE_SUPABASE_ANON_KEY
+        );
         const { error } = await supabase.auth.signUp({
             email,
             password,
