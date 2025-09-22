@@ -8,13 +8,16 @@ import {
     usePlayerManagerStore,
 } from "./managers/PlayerManager";
 import { ChessEngine } from "./engines/chessEngine";
+import { SecurityUtility, useSecurityUtilityStore } from "./utilities/Security";
 
 // Todo: implement Tablet
 const playerView: PlayerView = isDesktop ? "Desktop" : "Mobile";
 
 const playerManager = new PlayerManager({ playerView: playerView });
+const securityUtility = new SecurityUtility();
 
 usePlayerManagerStore.setState({ playerManager });
+useSecurityUtilityStore.setState({ securityUtility });
 
 createRoot(document.getElementById("root")!).render(
     <StrictMode>
