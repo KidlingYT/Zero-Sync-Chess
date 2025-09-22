@@ -7,6 +7,7 @@ import {
     PermissionsConfig,
     boolean,
     number,
+    Row,
 } from "@rocicorp/zero";
 
 type Authdata = {
@@ -37,7 +38,8 @@ export const schema = createSchema({
     tables: [z_chess_user, users, chess_games],
 });
 export type Schema = typeof schema;
-
+export type chess_games = Row<typeof schema.tables.chess_games>;
+export type users = Row<typeof schema.tables.users>;
 export const permissions = definePermissions<Authdata, Schema>(schema, () => {
     return {
         z_chess_user: ANYONE_CAN_DO_ANYTHING,
