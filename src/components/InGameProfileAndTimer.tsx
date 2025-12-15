@@ -10,7 +10,7 @@ interface ChessProfileProps {
     playerName: string;
     rating: number;
     isTimerActive: boolean;
-    gameId: string;
+    gameId: number;
     color: "White" | "Black";
     time: number;
     gameDuration: number;
@@ -20,7 +20,7 @@ export default function ChessProfile({
     playerName = "Magnus Carlsen",
     rating = 2850,
     isTimerActive = false,
-    gameId = "",
+    gameId = 0,
     color = "White",
     time = 60,
     gameDuration = 60,
@@ -42,13 +42,13 @@ export default function ChessProfile({
                     case "White":
                         zero.mutate.chess_games.update({
                             id: gameId,
-                            whiteTime: newTime,
+                            white_time: newTime,
                         });
                         break;
                     case "Black":
                         zero.mutate.chess_games.update({
                             id: gameId,
-                            blackTime: newTime,
+                            black_time: newTime,
                         });
                         break;
                 }

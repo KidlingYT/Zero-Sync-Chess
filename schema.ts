@@ -20,13 +20,13 @@ const users = table("users")
 
 const chess_games = table("chess_games")
     .columns({
-        id: string(),
-        whitePlayerName: string(),
-        blackPlayerName: string(),
+        id: number(),
+        white_player_name: string(),
+        black_player_name: string(),
         fen: string(),
         is_active: boolean(),
-        whiteTime: number(), // in seconds
-        blackTime: number(), // in seconds
+        white_time: number(), // in seconds
+        black_time: number(), // in seconds
     })
     .primaryKey("id");
 

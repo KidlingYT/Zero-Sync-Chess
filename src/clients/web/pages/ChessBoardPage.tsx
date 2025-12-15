@@ -22,7 +22,7 @@ const Home = () => {
     const [fen, setFen] = useState(chess.fen());
 
     const [dbGame] = useQuery(
-        zero.query.chess_games.where("id", params.gameId ?? "emptyGame").one()
+        zero.query.chess_games.where("id", Number(params.gameId ?? 0)).one()
     );
 
     useEffect(() => {
@@ -113,9 +113,9 @@ const Home = () => {
                 <div className="flex md:flex-col justify-between ml-4">
                     <div>
                         <InGameProfile
-                            gameDuration={dbGame.blackTime > 100 ? 300 : 60}
-                            time={dbGame.blackTime}
-                            playerName={dbGame.blackPlayerName}
+                            gameDuration={dbGame.black_time > 100 ? 300 : 60}
+                            time={dbGame.black_time}
+                            playerName={dbGame.black_player_name}
                             rating={1400}
                             isTimerActive={isBlackTurn}
                             color="Black"
@@ -124,11 +124,11 @@ const Home = () => {
                     </div>
                     <div>
                         <InGameProfile
-                            gameDuration={dbGame.blackTime > 100 ? 300 : 60}
-                            time={dbGame.whiteTime}
+                            gameDuration={dbGame.black_time > 100 ? 300 : 60}
+                            time={dbGame.white_time}
                             color="White"
                             gameId={dbGame.id}
-                            playerName={dbGame.whitePlayerName}
+                            playerName={dbGame.white_player_name}
                             rating={2000}
                             isTimerActive={isWhiteTurn}
                         />
