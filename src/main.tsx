@@ -8,7 +8,7 @@ import {
     usePlayerManagerStore,
 } from "./managers/PlayerManager";
 import { ChessEngine } from "./engines/chessEngine";
-import { SecurityUtility, useSecurityUtilityStore } from "./utilities/Security";
+import { SecurityUtility, useSecurityUtilityStore } from "./utilities/security";
 
 // Todo: implement Tablet
 const playerView: PlayerView = isDesktop ? "Desktop" : "Mobile";

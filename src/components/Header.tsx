@@ -3,7 +3,7 @@ import { CgProfile } from "react-icons/cg";
 import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { GiHeavyBullets } from "react-icons/gi";
-import { useSecurityUtilityStore } from "@/utilities/Security";
+import { useSecurityUtilityStore } from "@/utilities/security";
 
 const Header = () => {
     const [isUserSignedIn, setIsUserSignedIn] = useState<boolean>(false);
