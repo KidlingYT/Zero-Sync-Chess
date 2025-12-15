@@ -1,28 +1,29 @@
 import { Button } from "@/components/ui/button";
-import { useZero } from "@rocicorp/zero/react";
 import { CgProfile } from "react-icons/cg";
 import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { GiHeavyBullets } from "react-icons/gi";
+import { useSecurityUtilityStore } from "@/utilities/security";
 
 const Header = () => {
-    const z = useZero();
-
     const [isUserSignedIn, setIsUserSignedIn] = useState<boolean>(false);
+    const { securityUtility } = useSecurityUtilityStore();
 
     useEffect(() => {
-        if (z.userID === "anon") {
-            setIsUserSignedIn(false);
-        } else setIsUserSignedIn(true);
-    }, [z.userID]);
+        async function getAndSetUser() {
+            const isLoggedIn = await securityUtility?.isLoggedIn();
+            setIsUserSignedIn(isLoggedIn ?? false);
+        }
 
+        getAndSetUser();
+    }, [securityUtility]);
     const navigate = useNavigate();
 
     function handleNavigate(path: string) {
         navigate(path);
     }
     return (
-        <header className="w-full shadow-sm z-10 fixed top-0 left-0 bg-linear-to-b from-neutral-800 to-neutral-900 text-white">
+        <header className="w-full shadow-sm z-10 fixed top-0 left-0 bg-linear-to-b bg-none text-white">
             <div className="flex items-center justify-between px-4 py-2">
                 <div
                     className="flex items-center space-x-2"

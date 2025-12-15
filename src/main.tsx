@@ -1,31 +1,26 @@
 import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
 import "./index.css";
-import App from "./App.tsx";
-import { ZeroProvider } from "@rocicorp/zero/react";
-import { Zero } from "@rocicorp/zero";
-import { schema } from "../schema.ts";
-import { decodeJwt } from "jose";
-import Cookie from "js-cookie";
-import { Toaster } from "@/components/ui/sonner";
+import { isDesktop } from "react-device-detect";
+import {
+    PlayerManager,
+    PlayerView,
+    usePlayerManagerStore,
+} from "./managers/PlayerManager";
+import { ChessEngine } from "./engines/chessEngine";
+import { SecurityUtility, useSecurityUtilityStore } from "./utilities/security";
 
-const encodedJwtToken = Cookie.get("jwt");
-const decodedJwtToken = encodedJwtToken && decodeJwt(encodedJwtToken);
-const userID = decodedJwtToken?.sub ? (decodedJwtToken.sub as string) : "anon";
+// Todo: implement Tablet
+const playerView: PlayerView = isDesktop ? "Desktop" : "Mobile";
 
-const z = new Zero({
-  userID,
-  auth: () => encodedJwtToken,
-  server: "http://localhost:4848",
-  schema,
-  kvStore: "idb",
-});
+const playerManager = new PlayerManager({ playerView: playerView });
+const securityUtility = new SecurityUtility();
+
+usePlayerManagerStore.setState({ playerManager });
+useSecurityUtilityStore.setState({ securityUtility });
 
 createRoot(document.getElementById("root")!).render(
-  <StrictMode>
-    <ZeroProvider zero={z}>
-      <App />
-      <Toaster />
-    </ZeroProvider>
-  </StrictMode>
+    <StrictMode>
+        <ChessEngine />
+    </StrictMode>
 );

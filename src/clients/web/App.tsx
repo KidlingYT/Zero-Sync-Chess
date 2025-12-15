@@ -7,13 +7,14 @@ import AccountPage from "./pages/Account";
 import MatchingPage from "./pages/MatchingPage";
 import NoAuthPage from "./pages/NoAuthPage";
 
-function App() {
+function DesktopApp() {
     return (
         <BrowserRouter>
             <Routes>
                 <Route path="/signin" element={<SignInPage />}></Route>
                 <Route path="/matching" element={<MatchingPage />} />
                 <Route path="/" element={<SignUpPage />}></Route>
+                <Route path="/signup" element={<SignUpPage />}></Route>
                 <Route
                     path="/game/:gameId"
                     element={<ChessBoardPage />}
@@ -25,4 +26,4 @@ function App() {
     );
 }
 
-export default App;
+export default DesktopApp;
