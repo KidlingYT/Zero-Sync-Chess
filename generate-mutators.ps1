@@ -24,14 +24,14 @@ $output += "export const mutators = {"
 foreach ($name in ($found.Keys | Sort-Object)) {
     $output += @"
   ${name}: {
-    create: defineMutator({}, async ({ tx, ctx, args: {} }) => {
-      await tx.mutate.${name}.insert({});
+    create: defineMutator({}, async ({ tx, args }) => {
+      await tx.mutate.${name}.insert(args);
     }),
-    update: defineMutator({}, async ({ tx, ctx, args: {} }) => {
-      await tx.mutate.${name}.update({});
+    update: defineMutator({}, async ({ tx, args }) => {
+      await tx.mutate.${name}.update(args);
     }),
-    delete: defineMutator({}, async ({ tx, ctx, args: {} }) => {
-      await tx.mutate.${name}.delete({});
+    delete: defineMutator({}, async ({ tx, args }) => {
+      await tx.mutate.${name}.delete(args);
     }),
   },
 "@
