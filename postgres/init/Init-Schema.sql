@@ -1,5 +1,5 @@
 CREATE TABLE chess_games (
-    id INTEGER GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
 
     white_player_name TEXT NOT NULL,
     black_player_name TEXT NOT NULL,

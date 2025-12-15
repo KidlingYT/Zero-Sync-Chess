@@ -20,7 +20,7 @@ const users = table("users")
 
 const chess_games = table("chess_games")
     .columns({
-        id: number(),
+        id: string(),
         white_player_name: string(),
         black_player_name: string(),
         fen: string(),

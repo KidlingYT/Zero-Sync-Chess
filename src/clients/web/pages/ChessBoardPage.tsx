@@ -22,7 +22,7 @@ const Home = () => {
     const [fen, setFen] = useState(chess.fen());
 
     const [dbGame] = useQuery(
-        zero.query.chess_games.where("id", Number(params.gameId ?? 0)).one()
+        zero.query.chess_games.where("id", params.gameId ?? "").one()
     );
 
     useEffect(() => {
