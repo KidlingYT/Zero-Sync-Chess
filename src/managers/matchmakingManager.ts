@@ -12,4 +12,8 @@ export class MatchmakingManager {
     constructor(props: MatchmakingManagerProps) {
         this.userInfo = props.userInfo;
     }
+
+    log() {
+        console.log(this.currentGame, this.userInfo);
+    }
 }

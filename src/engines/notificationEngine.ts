@@ -7,7 +7,7 @@ export const NotificationEngine = () => {
 
     if (!playerManager) return;
 
-    let notification;
+    // let notification;
 
     switch (playerManager?.getView()) {
         case "Mobile":
