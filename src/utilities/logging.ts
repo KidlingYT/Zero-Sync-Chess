@@ -10,6 +10,7 @@ export class Logging {
     startTrace() {
         const trace = new Trace();
         this.activeTraces.push(trace);
+        return trace;
     }
     getActiveTrace(id: string) {
         return this.activeTraces.find((trace) => trace.getId() === id);
@@ -80,6 +81,7 @@ class Trace {
             timeStampEpoch: new Date().getTime(),
         });
         this.endTimeEpoch = new Date().getTime();
+        // TODO: actually save somewhere
     }
 
     getTrace(): TraceEvent {
