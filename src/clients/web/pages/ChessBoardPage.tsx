@@ -5,14 +5,14 @@ import { Chessboard } from "react-chessboard";
 import { Chess, Square } from "chess.js";
 import { toast } from "sonner";
 import { useParams } from "react-router-dom";
-import { useQuery, useZero } from "@rocicorp/zero/react";
-import { Schema } from "schema";
 import { useNavigate } from "react-router-dom";
 import { BLANKFEN } from "@/lib/chessGame";
+import { mutators } from "@/mutators";
+import { queries } from "@/queries";
+import { useQuery } from "@rocicorp/zero/react";
 
 const Home = () => {
     const params = useParams();
-    const zero = useZero<Schema>();
     const navigate = useNavigate();
 
     const [isWhiteTurn, setIsWhiteTurn] = useState<boolean>(false);
@@ -22,7 +22,7 @@ const Home = () => {
     const [fen, setFen] = useState(chess.fen());
 
     const [dbGame] = useQuery(
-        zero.query.chess_games.where("id", params.gameId ?? "").one()
+        queries.chess_games.one({ id: params.gameId ?? "" })
     );
 
     useEffect(() => {
@@ -45,7 +45,7 @@ const Home = () => {
 
     function updateGame() {
         if (!dbGame?.id) return;
-        zero.mutate.chess_games.update({ id: dbGame?.id, fen: chess.fen() });
+        mutators.chess_games.update({ id: dbGame?.id, fen: chess.fen() });
         setIsWhiteTurn(chess.turn() === "w");
         setIsBlackTurn(chess.turn() === "b");
     }
@@ -89,7 +89,7 @@ const Home = () => {
     function endGame() {
         setIsBlackTurn(false);
         setIsWhiteTurn(false);
-        zero.mutate.chess_games.update({ id: dbGame!.id, is_active: false });
+        mutators.chess_games.update({ id: dbGame!.id, is_active: false });
     }
 
     if (!dbGame) return <div>Loading...</div>;

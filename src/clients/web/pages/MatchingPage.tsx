@@ -1,7 +1,7 @@
 import Header from "@/components/Header";
 import { Button } from "@/components/ui/button";
 import { BLANKFEN } from "@/lib/chessGame";
-import { Schema, useZero } from "@rocicorp/zero/react";
+import { mutators } from "@/mutators";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { v4 as uuid } from "uuid";
@@ -59,7 +59,6 @@ const BulletButton = ({
 };
 
 const MatchingPage = () => {
-    const zero = useZero<Schema>();
     const navigate = useNavigate();
     const [selectedMode, setSelectedMode] = useState<number | null>(null);
     const [isSearching, setIsSearching] = useState(false);
@@ -71,16 +70,16 @@ const MatchingPage = () => {
         setIsSearching(false);
     }
 
-    function startSearching() {
+    async function startSearching() {
         // todo api
-        const gameId = createGame(selectedMode ?? 60);
+        const gameId = await createGame(selectedMode ?? 60);
         stopSearching();
         navigate(`/game/${gameId}`);
     }
 
-    function createGame(timeControl: number): string {
+    async function createGame(timeControl: number): Promise<string> {
         const id = uuid();
-        zero.mutate.chess_games.insert({
+        await mutators.chess_games.create({
             id: id,
             white_player_name: "You",
             black_player_name: "AI",
