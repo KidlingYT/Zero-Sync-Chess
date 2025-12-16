@@ -1,6 +1,6 @@
 // Logging Utility encapsulates logging volatity.
 
-import { makeTimestampedUUID } from "@/lib/utils";
+import { makeTimestampedUUID } from "@/utilities/lib/utils";
 
 export class Logging {
     private activeTraces: Trace[] = [];

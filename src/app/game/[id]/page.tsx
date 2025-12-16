@@ -1,19 +1,20 @@
+"use client";
 import Header from "@/components/Header";
 import InGameProfile from "@/components/InGameProfileAndTimer";
 import { useState, useEffect } from "react";
 import { Chessboard } from "react-chessboard";
 import { Chess, Square } from "chess.js";
 import { toast } from "sonner";
-import { useParams } from "react-router-dom";
+import { useSearchParams } from "next/navigation";
 import { useQuery, useZero } from "@rocicorp/zero/react";
 import { Schema } from "schema";
-import { useNavigate } from "react-router-dom";
-import { BLANKFEN } from "@/lib/chessGame";
+import { BLANKFEN } from "@/utilities/lib/chessGame";
+import { useRouter } from "next/navigation";
 
-const Home = () => {
-    const params = useParams();
+export default function Page() {
+    const params = useSearchParams();
     const zero = useZero<Schema>();
-    const navigate = useNavigate();
+    const router = useRouter();
 
     const [isWhiteTurn, setIsWhiteTurn] = useState<boolean>(false);
     const [isBlackTurn, setIsBlackTurn] = useState<boolean>(false);
@@ -22,7 +23,7 @@ const Home = () => {
     const [fen, setFen] = useState(chess.fen());
 
     const [dbGame] = useQuery(
-        zero.query.chess_games.where("id", params.gameId ?? "").one()
+        zero.query.chess_games.where("id", params.get("gameId") ?? "").one()
     );
 
     useEffect(() => {
@@ -30,16 +31,16 @@ const Home = () => {
             if (dbGame.is_active === false) {
                 setTimeout(() => {
                     toast("This game has ended.");
-                    navigate("/matching");
+                    router.push("/matching");
                 }, 2000);
             }
             setChess(new Chess(dbGame.fen));
             setFen(dbGame.fen);
         }
-    }, [dbGame, navigate]);
+    }, [dbGame, router]);
 
-    if (params.gameId === undefined) {
-        navigate("matching");
+    if (params.get("gameId") === undefined) {
+        router.push("matching");
         return;
     }
 
@@ -137,6 +138,4 @@ const Home = () => {
             </div>
         </main>
     );
-};
-
-export default Home;
+}

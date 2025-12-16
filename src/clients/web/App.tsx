@@ -1,10 +1,11 @@
+"use client";
 import "./App.css";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-import SignInPage from "./pages/SignInPage";
+import SignInPage from "../../app/signin/page";
 import SignUpPage from "./pages/SignUpPage";
-import ChessBoardPage from "./pages/ChessBoardPage";
+import ChessBoardPage from "../../app/game/[id]/page";
 import AccountPage from "./pages/Account";
-import MatchingPage from "./pages/MatchingPage";
+import MatchingPage from "../../app/matching/page";
 import NoAuthPage from "./pages/NoAuthPage";
 
 function DesktopApp() {

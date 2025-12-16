@@ -1,9 +1,10 @@
+"use client";
 import Header from "@/components/Header";
-import SignIn from "../../../components/SignIn";
+import SignIn from "../../components/SignIn";
 
 const SignInPage = () => {
     return (
-        <main className="absolute top-0 left-0 flex flex-col justify-center items-center bg-[url('../../../chess.jpg')] bg-no-repeat bg-cover bg-center bg-fixed w-screen">
+        <main className="absolute top-0 left-0 flex flex-col justify-center items-center bg-[url('/chess.jpg')] bg-no-repeat bg-cover bg-center bg-fixed w-screen">
             <Header />
             <div className="h-screen flex flex-col justify-center items-center w-full">
                 <p className="text-white text-3xl py-12">

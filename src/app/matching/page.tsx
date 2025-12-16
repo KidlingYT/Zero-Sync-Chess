@@ -1,9 +1,10 @@
+"use client";
 import Header from "@/components/Header";
 import { Button } from "@/components/ui/button";
-import { BLANKFEN } from "@/lib/chessGame";
+import { BLANKFEN } from "@/utilities/lib/chessGame";
 import { Schema, useZero } from "@rocicorp/zero/react";
+import { useRouter } from "next/navigation";
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
 import { v4 as uuid } from "uuid";
 
 const BulletButton = ({
@@ -60,7 +61,7 @@ const BulletButton = ({
 
 const MatchingPage = () => {
     const zero = useZero<Schema>();
-    const navigate = useNavigate();
+    const router = useRouter();
     const [selectedMode, setSelectedMode] = useState<number | null>(null);
     const [isSearching, setIsSearching] = useState(false);
 
@@ -75,7 +76,7 @@ const MatchingPage = () => {
         // todo api
         const gameId = createGame(selectedMode ?? 60);
         stopSearching();
-        navigate(`/game/${gameId}`);
+        router.push(`/game/${gameId}`);
     }
 
     function createGame(timeControl: number): string {
@@ -95,7 +96,7 @@ const MatchingPage = () => {
     const bulletModes = [15, 30, 60];
 
     return (
-        <main className="absolute top-0 left-0 w-screen h-screen flex flex-col items-center bg-[url('../../../chess.jpg')] bg-no-repeat bg-cover bg-center bg-fixed">
+        <main className="absolute top-0 left-0 w-screen h-screen flex flex-col items-center bg-[url('/chess.jpg')] bg-no-repeat bg-cover bg-center bg-fixed">
             <Header />
             <div className="my-auto">
                 <h2 className=" text-3xl font-bold text-white">

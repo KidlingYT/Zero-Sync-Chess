@@ -1,5 +1,5 @@
 // Zero Sync Resource provides access to the zero client instance.
-
+"use client";
 import { ZeroProvider } from "@rocicorp/zero/react";
 import { Zero } from "@rocicorp/zero";
 import { schema } from "../../schema.ts";
