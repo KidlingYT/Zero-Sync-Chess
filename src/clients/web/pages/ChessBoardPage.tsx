@@ -5,14 +5,13 @@ import { Chessboard } from "react-chessboard";
 import { Chess, Square } from "chess.js";
 import { toast } from "sonner";
 import { useParams } from "react-router-dom";
-import { useQuery, useZero } from "@rocicorp/zero/react";
-import { Schema } from "schema";
+import { useQuery } from "@rocicorp/zero/react";
 import { useNavigate } from "react-router-dom";
 import { BLANKFEN } from "@/lib/chessGame";
+import { queries } from "@/queries";
 
 const Home = () => {
     const params = useParams();
-    const zero = useZero<Schema>();
     const navigate = useNavigate();
 
     const [isWhiteTurn, setIsWhiteTurn] = useState<boolean>(false);
@@ -22,7 +21,8 @@ const Home = () => {
     const [fen, setFen] = useState(chess.fen());
 
     const [dbGame] = useQuery(
-        zero.query.chess_games.where("id", params.gameId ?? "").one()
+        queries.chess_games.one({ id: params.gameId ?? "" })
+        // zero.query.chess_games.where("id", params.gameId ?? "").one()
     );
 
     useEffect(() => {
