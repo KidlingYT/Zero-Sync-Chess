@@ -1,52 +1,62 @@
 "use client";
 import Header from "@/components/Header";
-import InGameProfile from "@/components/InGameProfileAndTimer";
+import ChessProfile from "@/components/InGameProfileAndTimer";
 import { useState, useEffect } from "react";
 import { Chessboard } from "react-chessboard";
 import { Chess, Square } from "chess.js";
-import { toast } from "sonner";
-import { useSearchParams } from "next/navigation";
+import { toast, Toaster } from "sonner";
 import { useQuery, useZero } from "@rocicorp/zero/react";
 import { Schema } from "schema";
 import { BLANKFEN } from "@/utilities/lib/chessGame";
-import { useRouter } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 
 export default function Page() {
-    const params = useSearchParams();
+    const params = useParams<{ id: string }>();
     const zero = useZero<Schema>();
     const router = useRouter();
 
     const [isWhiteTurn, setIsWhiteTurn] = useState<boolean>(false);
     const [isBlackTurn, setIsBlackTurn] = useState<boolean>(false);
+    const [blackTime, setBlackTime] = useState<number>(60);
+    const [whiteTime, setWhiteTime] = useState<number>(60);
 
     const [chess, setChess] = useState(new Chess(BLANKFEN));
     const [fen, setFen] = useState(chess.fen());
 
     const [dbGame] = useQuery(
-        zero.query.chess_games.where("id", params.get("gameId") ?? "").one()
+        zero.query.chess_games.where("id", params.id ?? "").one()
     );
 
     useEffect(() => {
         if (dbGame) {
             if (dbGame.is_active === false) {
+                toast("This game has ended.");
                 setTimeout(() => {
-                    toast("This game has ended.");
                     router.push("/matching");
                 }, 2000);
             }
             setChess(new Chess(dbGame.fen));
             setFen(dbGame.fen);
+            if (dbGame.fen === BLANKFEN) {
+                setWhiteTime(dbGame.white_time);
+                setBlackTime(dbGame.black_time);
+            }
         }
     }, [dbGame, router]);
 
-    if (params.get("gameId") === undefined) {
-        router.push("matching");
+    if (params.id === undefined) {
+        router.push("/matching");
         return;
     }
 
     function updateGame() {
         if (!dbGame?.id) return;
-        zero.mutate.chess_games.update({ id: dbGame?.id, fen: chess.fen() });
+        zero.mutate.chess_games.update({
+            id: dbGame?.id,
+            fen: chess.fen(),
+            white_time: whiteTime,
+            black_time: blackTime,
+        });
         setIsWhiteTurn(chess.turn() === "w");
         setIsBlackTurn(chess.turn() === "b");
     }
@@ -97,6 +107,7 @@ export default function Page() {
 
     return (
         <main className="absolute top-0 pt-16 left-0 flex flex-col justify-center items-center bg-neutral-900 w-screen h-screen">
+            <Toaster />
             <Header />
             <div className="md:flex-row flex flex-col justify-center">
                 <div className="h-full max-w-[70vw] min-h-[70vh] aspect-square max-h-[70vh] border-2 border-gray-100 shadow-md ">
@@ -113,21 +124,19 @@ export default function Page() {
                 </div>
                 <div className="flex md:flex-col justify-between ml-4">
                     <div>
-                        <InGameProfile
-                            gameDuration={dbGame.black_time > 100 ? 300 : 60}
-                            time={dbGame.black_time}
+                        <ChessProfile
+                            time={blackTime}
+                            setTime={setBlackTime}
                             playerName={dbGame.black_player_name}
                             rating={1400}
                             isTimerActive={isBlackTurn}
-                            color="Black"
                             gameId={dbGame.id}
                         />
                     </div>
                     <div>
-                        <InGameProfile
-                            gameDuration={dbGame.black_time > 100 ? 300 : 60}
-                            time={dbGame.white_time}
-                            color="White"
+                        <ChessProfile
+                            time={whiteTime}
+                            setTime={setWhiteTime}
                             gameId={dbGame.id}
                             playerName={dbGame.white_player_name}
                             rating={2000}

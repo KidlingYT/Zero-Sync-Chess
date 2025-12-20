@@ -72,16 +72,16 @@ const MatchingPage = () => {
         setIsSearching(false);
     }
 
-    function startSearching() {
+    async function startSearching() {
         // todo api
-        const gameId = createGame(selectedMode ?? 60);
+        const gameId = await createGame(selectedMode ?? 60);
         stopSearching();
         router.push(`/game/${gameId}`);
     }
 
-    function createGame(timeControl: number): string {
+    async function createGame(timeControl: number): Promise<string> {
         const id = uuid();
-        zero.mutate.chess_games.insert({
+        await zero.mutate.chess_games.insert({
             id: id,
             white_player_name: "You",
             black_player_name: "AI",

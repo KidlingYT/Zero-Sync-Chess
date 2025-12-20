@@ -1,6 +1,6 @@
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { useEffect, useState } from "react";
+import { Dispatch, SetStateAction, useEffect, useState } from "react";
 import { Separator } from "./ui/separator";
 import { useZero } from "@rocicorp/zero/react";
 import { Schema } from "schema";
@@ -11,9 +11,8 @@ interface ChessProfileProps {
     rating: number;
     isTimerActive: boolean;
     gameId: string;
-    color: "White" | "Black";
     time: number;
-    gameDuration: number;
+    setTime: Dispatch<SetStateAction<number>>;
 }
 
 export default function ChessProfile({
@@ -21,10 +20,10 @@ export default function ChessProfile({
     rating = 2850,
     isTimerActive = false,
     gameId = "",
-    color = "White",
     time = 60,
-    gameDuration = 60,
+    setTime,
 }: ChessProfileProps) {
+    const initialTime = time;
     const zero = useZero<Schema>();
     const [intervalId, setIntervalId] = useState<NodeJS.Timeout | null>(null);
 
@@ -38,20 +37,7 @@ export default function ChessProfile({
             const id = setInterval(() => {
                 const newTime = time > 0 ? time - 1 : 0;
 
-                switch (color) {
-                    case "White":
-                        zero.mutate.chess_games.update({
-                            id: gameId,
-                            white_time: newTime,
-                        });
-                        break;
-                    case "Black":
-                        zero.mutate.chess_games.update({
-                            id: gameId,
-                            black_time: newTime,
-                        });
-                        break;
-                }
+                setTime(newTime);
 
                 return newTime;
             }, 1000);
@@ -65,12 +51,12 @@ export default function ChessProfile({
             }
         };
     }, [
-        color,
         gameId,
         intervalId,
         isTimerActive,
         time,
         zero.mutate.chess_games,
+        setTime,
     ]);
 
     useEffect(() => {
@@ -121,7 +107,7 @@ export default function ChessProfile({
                     <div
                         className="bg-primary h-2.5 rounded-full transition-all duration-300 ease-in-out"
                         style={{
-                            width: `${(time / gameDuration) * 100}%`, // Adjusted for actual game duration
+                            width: `${(time / initialTime) * 100}%`, // Adjusted for actual game duration
                         }}
                     ></div>
                 </div>
