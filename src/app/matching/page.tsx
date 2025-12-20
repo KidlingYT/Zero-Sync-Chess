@@ -87,8 +87,8 @@ const MatchingPage = () => {
             black_player_name: "AI",
             is_active: true,
             fen: BLANKFEN,
-            white_time: timeControl,
-            black_time: timeControl,
+            white_time: timeControl * 10,
+            black_time: timeControl * 10, // tenths
         });
         return id;
     }

@@ -20,7 +20,7 @@ export default function ChessProfile({
     rating = 2850,
     isTimerActive = false,
     gameId = "",
-    time = 60,
+    time = 600,
     setTime,
 }: ChessProfileProps) {
     const initialTime = time;
@@ -40,7 +40,7 @@ export default function ChessProfile({
                 setTime(newTime);
 
                 return newTime;
-            }, 1000);
+            }, 100);
 
             return () => clearInterval(id);
         }
@@ -71,9 +71,10 @@ export default function ChessProfile({
     }, [time, intervalId, zero.mutate.chess_games, gameId]);
 
     const formatTime = () => {
-        const minutes = Math.floor(time / 60);
-        const seconds = Math.floor(time % 60);
-        return `${minutes.toString().padStart(2, "0")}:${seconds.toString().padStart(2, "0")}`;
+        const minutes = Math.floor(time / 600);
+        const seconds = Math.floor(time % 600);
+        const tenths = Math.floor(time % 10);
+        return `${minutes.toString().padStart(2, "0")}:${seconds.toString().slice(0, 2).padStart(2, "0")}:${tenths.toString().padStart(1, "0")}`;
     };
 
     return (

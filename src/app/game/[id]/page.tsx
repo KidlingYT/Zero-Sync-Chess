@@ -17,8 +17,8 @@ export default function Page() {
 
     const [isWhiteTurn, setIsWhiteTurn] = useState<boolean>(false);
     const [isBlackTurn, setIsBlackTurn] = useState<boolean>(false);
-    const [blackTime, setBlackTime] = useState<number>(60);
-    const [whiteTime, setWhiteTime] = useState<number>(60);
+    const [blackTime, setBlackTime] = useState<number>(600); // tenths
+    const [whiteTime, setWhiteTime] = useState<number>(600); // tenths
 
     const [chess, setChess] = useState(new Chess(BLANKFEN));
     const [fen, setFen] = useState(chess.fen());
@@ -29,17 +29,21 @@ export default function Page() {
 
     useEffect(() => {
         if (dbGame) {
+            console.log({ isBlackTurn, isWhiteTurn });
             if (dbGame.is_active === false) {
                 toast("This game has ended.");
                 setTimeout(() => {
                     router.push("/matching");
                 }, 2000);
             }
-            setChess(new Chess(dbGame.fen));
+            const chessGame = new Chess(dbGame.fen);
+            setChess(chessGame);
             setFen(dbGame.fen);
-            if (dbGame.fen === BLANKFEN) {
-                setWhiteTime(dbGame.white_time);
-                setBlackTime(dbGame.black_time);
+            setWhiteTime(dbGame.white_time);
+            setBlackTime(dbGame.black_time);
+            if (isWhiteTurn === false && isBlackTurn === false) {
+                setIsWhiteTurn(chessGame.turn() === "w");
+                setIsBlackTurn(chessGame.turn() === "b");
             }
         }
     }, [dbGame, router]);
@@ -49,37 +53,51 @@ export default function Page() {
         return;
     }
 
-    function updateGame() {
+    function updateGame({ bT, wT }: { bT?: number; wT?: number }) {
         if (!dbGame?.id) return;
         zero.mutate.chess_games.update({
             id: dbGame?.id,
             fen: chess.fen(),
-            white_time: whiteTime,
-            black_time: blackTime,
+            white_time: wT ?? whiteTime,
+            black_time: bT ?? blackTime,
         });
         setIsWhiteTurn(chess.turn() === "w");
         setIsBlackTurn(chess.turn() === "b");
     }
 
-    function aiMove() {
-        setTimeout(() => {
-            const moves = chess.moves();
-            // Computer random move.
-            if (moves.length > 0) {
-                const computerMove =
-                    moves[Math.floor(Math.random() * moves.length)];
+    async function aiMove() {
+        const moves = chess.moves();
+        if (moves.length > 0) {
+            const computerMove =
+                moves[Math.floor(Math.random() * moves.length)];
+            const move = new Promise<void>((resolve) => {
+                setTimeout(() => {
+                    resolve();
+                }, 1100);
+            });
+
+            move.then(() => {
                 chess.move(computerMove);
-                setFen(chess.fen());
-                updateGame();
-            }
-        }, 1100);
+                updateGame({ bT: blackTime - 11 });
+            });
+        }
     }
 
     function handleMove(sourceSquare: Square, targetSquare: Square) {
-        if (
-            chess.move({ from: sourceSquare, to: targetSquare, promotion: "q" })
-        ) {
-            updateGame();
+        let isValidMove = false;
+        try {
+            chess.move({
+                from: sourceSquare,
+                to: targetSquare,
+                promotion: "q",
+            });
+            isValidMove = true;
+        } catch (error) {
+            console.log(error);
+        }
+
+        if (isValidMove) {
+            updateGame({});
             if (chess.isCheckmate()) {
                 toast.info("Game over, checkmate!");
                 endGame();
