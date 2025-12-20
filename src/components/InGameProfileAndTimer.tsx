@@ -2,9 +2,8 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Dispatch, SetStateAction, useEffect, useState } from "react";
 import { Separator } from "./ui/separator";
-import { useZero } from "@rocicorp/zero/react";
-import { Schema } from "schema";
 import { toast } from "sonner";
+import { mutators } from "@/mutators";
 
 interface ChessProfileProps {
     playerName: string;
@@ -24,7 +23,6 @@ export default function ChessProfile({
     setTime,
 }: ChessProfileProps) {
     const initialTime = time;
-    const zero = useZero<Schema>();
     const [intervalId, setIntervalId] = useState<NodeJS.Timeout | null>(null);
 
     useEffect(() => {
@@ -50,14 +48,7 @@ export default function ChessProfile({
                 clearInterval(intervalId);
             }
         };
-    }, [
-        gameId,
-        intervalId,
-        isTimerActive,
-        time,
-        zero.mutate.chess_games,
-        setTime,
-    ]);
+    }, [gameId, intervalId, isTimerActive, time, setTime]);
 
     useEffect(() => {
         if (time <= 0) {
@@ -66,9 +57,9 @@ export default function ChessProfile({
                 setIntervalId(null);
             }
             toast("Timeout!");
-            zero.mutate.chess_games.update({ id: gameId, is_active: false });
+            mutators.chess_games.update({ id: gameId, is_active: false });
         }
-    }, [time, intervalId, zero.mutate.chess_games, gameId]);
+    }, [time, intervalId, gameId]);
 
     const formatTime = () => {
         const minutes = Math.floor(time / 600);

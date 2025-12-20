@@ -5,14 +5,15 @@ import { useState, useEffect } from "react";
 import { Chessboard } from "react-chessboard";
 import { Chess, Square } from "chess.js";
 import { toast, Toaster } from "sonner";
-import { useQuery, useZero } from "@rocicorp/zero/react";
-import { Schema } from "schema";
+import { useParams } from "react-router-dom";
+import { useQuery } from "@rocicorp/zero/react";
 import { BLANKFEN } from "@/utilities/lib/chessGame";
-import { useParams, useRouter } from "next/navigation";
+import { queries } from "@/queries";
+import { useRouter } from "next/navigation";
+import { mutators } from "@/mutators";
 
 export default function Page() {
     const params = useParams<{ id: string }>();
-    const zero = useZero<Schema>();
     const router = useRouter();
 
     const [isWhiteTurn, setIsWhiteTurn] = useState<boolean>(false);
@@ -23,9 +24,7 @@ export default function Page() {
     const [chess, setChess] = useState(new Chess(BLANKFEN));
     const [fen, setFen] = useState(chess.fen());
 
-    const [dbGame] = useQuery(
-        zero.query.chess_games.where("id", params.id ?? "").one()
-    );
+    const [dbGame] = useQuery(queries.chess_games.one({ id: params.id ?? "" }));
 
     useEffect(() => {
         if (dbGame) {
@@ -46,7 +45,7 @@ export default function Page() {
                 setIsBlackTurn(chessGame.turn() === "b");
             }
         }
-    }, [dbGame, router]);
+    }, [dbGame, router, isBlackTurn, isWhiteTurn]);
 
     if (params.id === undefined) {
         router.push("/matching");
@@ -55,7 +54,7 @@ export default function Page() {
 
     function updateGame({ bT, wT }: { bT?: number; wT?: number }) {
         if (!dbGame?.id) return;
-        zero.mutate.chess_games.update({
+        mutators.chess_games.update({
             id: dbGame?.id,
             fen: chess.fen(),
             white_time: wT ?? whiteTime,
@@ -118,7 +117,7 @@ export default function Page() {
     function endGame() {
         setIsBlackTurn(false);
         setIsWhiteTurn(false);
-        zero.mutate.chess_games.update({ id: dbGame!.id, is_active: false });
+        mutators.chess_games.update({ id: dbGame!.id, is_active: false });
     }
 
     if (!dbGame) return <div>Loading...</div>;
