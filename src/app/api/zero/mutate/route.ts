@@ -9,7 +9,7 @@ export async function POST(req: Request) {
         (transact) =>
             transact((tx, name, args) => {
                 const mutator = mustGetMutator(mutators, name);
-                return mutator.fn({ args, tx, ctx: { userId: "anon" } });
+                return mutator.fn({ args, tx, ctx: { userID: "anon" } });
             }),
         req
     );
