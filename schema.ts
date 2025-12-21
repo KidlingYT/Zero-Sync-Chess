@@ -31,3 +31,14 @@ export const zql = createBuilder(schema);
 export type Schema = typeof schema;
 export type chess_games = Row<typeof schema.tables.chess_games>;
 export type users = Row<typeof schema.tables.users>;
+
+export type AuthData = {
+    userID: string | null;
+};
+
+declare module "@rocicorp/zero" {
+    interface DefaultTypes {
+        schema: Schema;
+        context: AuthData;
+    }
+}
