@@ -17,12 +17,12 @@ const usersDeleteSchema = z.object({
 
 export const users_mutators = {
     create: defineMutator(usersCreateSchema, async ({ tx, args }) => {
-        await tx.mutate.chess_games.insert(args);
+        await tx.mutate.users.insert(args);
     }),
     update: defineMutator(usersUpdateSchema, async ({ tx, args }) => {
-        await tx.mutate.chess_games.update(args);
+        await tx.mutate.users.update(args);
     }),
     delete: defineMutator(usersDeleteSchema, async ({ tx, args }) => {
-        await tx.mutate.chess_games.delete(args);
+        await tx.mutate.users.delete(args);
     }),
 };
