@@ -5,11 +5,10 @@ import { useState, useEffect } from "react";
 import { Chessboard } from "react-chessboard";
 import { Chess, Square } from "chess.js";
 import { toast, Toaster } from "sonner";
-import { useParams } from "react-router-dom";
 import { useQuery } from "@rocicorp/zero/react";
 import { BLANKFEN } from "@/utilities/lib/chessGame";
 import { queries } from "queries";
-import { useRouter } from "next/navigation";
+import { useRouter, useParams } from "next/navigation";
 import { mutators } from "mutators";
 
 export default function Page() {
@@ -28,7 +27,6 @@ export default function Page() {
 
     useEffect(() => {
         if (dbGame) {
-            console.log({ isBlackTurn, isWhiteTurn });
             if (dbGame.is_active === false) {
                 toast("This game has ended.");
                 setTimeout(() => {
