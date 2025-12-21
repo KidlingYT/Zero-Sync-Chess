@@ -2,11 +2,11 @@
 import "./App.css";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import SignInPage from "../../app/signin/page";
-import SignUpPage from "./pages/SignUpPage";
+import SignUpPage from "../../app/signup/page";
 import ChessBoardPage from "../../app/game/[id]/page";
-import AccountPage from "./pages/Account";
+import AccountPage from "../../app/account/page";
 import MatchingPage from "../../app/matching/page";
-import NoAuthPage from "./pages/NoAuthPage";
+import NoAuthPage from "../../app/noauth/page";
 
 function DesktopApp() {
     return (
