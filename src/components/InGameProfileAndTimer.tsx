@@ -3,7 +3,7 @@ import { Badge } from "@/components/ui/badge";
 import { Dispatch, SetStateAction, useEffect, useState } from "react";
 import { Separator } from "./ui/separator";
 import { toast } from "sonner";
-import { mutators } from "@/mutators";
+import { mutators } from "mutators";
 
 interface ChessProfileProps {
     playerName: string;

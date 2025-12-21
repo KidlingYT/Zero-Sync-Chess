@@ -2,7 +2,7 @@
 import Header from "@/components/Header";
 import { Button } from "@/components/ui/button";
 import { BLANKFEN } from "@/utilities/lib/chessGame";
-import { mutators } from "@/mutators";
+import { mutators } from "mutators";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { v4 as uuid } from "uuid";

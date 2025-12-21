@@ -8,9 +8,9 @@ import { toast, Toaster } from "sonner";
 import { useParams } from "react-router-dom";
 import { useQuery } from "@rocicorp/zero/react";
 import { BLANKFEN } from "@/utilities/lib/chessGame";
-import { queries } from "@/queries";
+import { queries } from "queries";
 import { useRouter } from "next/navigation";
-import { mutators } from "@/mutators";
+import { mutators } from "mutators";
 
 export default function Page() {
     const params = useParams<{ id: string }>();
