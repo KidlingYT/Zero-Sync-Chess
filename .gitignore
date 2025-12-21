@@ -27,3 +27,4 @@ dist-ssr
 
 # Zero Cache files
 /sync-replica.db*
+.next/

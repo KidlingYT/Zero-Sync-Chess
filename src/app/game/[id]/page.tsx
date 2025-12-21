@@ -1,74 +1,102 @@
+"use client";
 import Header from "@/components/Header";
-import InGameProfile from "@/components/InGameProfileAndTimer";
+import ChessProfile from "@/components/InGameProfileAndTimer";
 import { useState, useEffect } from "react";
 import { Chessboard } from "react-chessboard";
 import { Chess, Square } from "chess.js";
-import { toast } from "sonner";
+import { toast, Toaster } from "sonner";
 import { useParams } from "react-router-dom";
 import { useQuery } from "@rocicorp/zero/react";
-import { useNavigate } from "react-router-dom";
-import { BLANKFEN } from "@/lib/chessGame";
-import { queries } from "@/queries";
+import { BLANKFEN } from "@/utilities/lib/chessGame";
+import { queries } from "queries";
+import { useRouter } from "next/navigation";
+import { mutators } from "mutators";
 
-const Home = () => {
-    const params = useParams();
-    const navigate = useNavigate();
+export default function Page() {
+    const params = useParams<{ id: string }>();
+    const router = useRouter();
 
     const [isWhiteTurn, setIsWhiteTurn] = useState<boolean>(false);
     const [isBlackTurn, setIsBlackTurn] = useState<boolean>(false);
+    const [blackTime, setBlackTime] = useState<number>(600); // tenths
+    const [whiteTime, setWhiteTime] = useState<number>(600); // tenths
 
     const [chess, setChess] = useState(new Chess(BLANKFEN));
     const [fen, setFen] = useState(chess.fen());
 
-    const [dbGame] = useQuery(
-        queries.chess_games.one({ id: params.gameId ?? "" })
-        // zero.query.chess_games.where("id", params.gameId ?? "").one()
-    );
+    const [dbGame] = useQuery(queries.chess_games.one({ id: params.id ?? "" }));
 
     useEffect(() => {
         if (dbGame) {
+            console.log({ isBlackTurn, isWhiteTurn });
             if (dbGame.is_active === false) {
+                toast("This game has ended.");
                 setTimeout(() => {
-                    toast("This game has ended.");
-                    navigate("/matching");
+                    router.push("/matching");
                 }, 2000);
             }
-            setChess(new Chess(dbGame.fen));
+            const chessGame = new Chess(dbGame.fen);
+            setChess(chessGame);
             setFen(dbGame.fen);
+            setWhiteTime(dbGame.white_time);
+            setBlackTime(dbGame.black_time);
+            if (isWhiteTurn === false && isBlackTurn === false) {
+                setIsWhiteTurn(chessGame.turn() === "w");
+                setIsBlackTurn(chessGame.turn() === "b");
+            }
         }
-    }, [dbGame, navigate]);
+    }, [dbGame, router, isBlackTurn, isWhiteTurn]);
 
-    if (params.gameId === undefined) {
-        navigate("matching");
+    if (params.id === undefined) {
+        router.push("/matching");
         return;
     }
 
-    function updateGame() {
+    function updateGame({ bT, wT }: { bT?: number; wT?: number }) {
         if (!dbGame?.id) return;
-        zero.mutate.chess_games.update({ id: dbGame?.id, fen: chess.fen() });
+        mutators.chess_games.update({
+            id: dbGame?.id,
+            fen: chess.fen(),
+            white_time: wT ?? whiteTime,
+            black_time: bT ?? blackTime,
+        });
         setIsWhiteTurn(chess.turn() === "w");
         setIsBlackTurn(chess.turn() === "b");
     }
 
-    function aiMove() {
-        setTimeout(() => {
-            const moves = chess.moves();
-            // Computer random move.
-            if (moves.length > 0) {
-                const computerMove =
-                    moves[Math.floor(Math.random() * moves.length)];
+    async function aiMove() {
+        const moves = chess.moves();
+        if (moves.length > 0) {
+            const computerMove =
+                moves[Math.floor(Math.random() * moves.length)];
+            const move = new Promise<void>((resolve) => {
+                setTimeout(() => {
+                    resolve();
+                }, 1100);
+            });
+
+            move.then(() => {
                 chess.move(computerMove);
-                setFen(chess.fen());
-                updateGame();
-            }
-        }, 1100);
+                updateGame({ bT: blackTime - 11 });
+            });
+        }
     }
 
     function handleMove(sourceSquare: Square, targetSquare: Square) {
-        if (
-            chess.move({ from: sourceSquare, to: targetSquare, promotion: "q" })
-        ) {
-            updateGame();
+        let isValidMove = false;
+        try {
+            chess.move({
+                from: sourceSquare,
+                to: targetSquare,
+                promotion: "q",
+            });
+            isValidMove = true;
+        } catch (error) {
+            console.log(error);
+        }
+
+        if (isValidMove) {
+            updateGame({});
             if (chess.isCheckmate()) {
                 toast.info("Game over, checkmate!");
                 endGame();
@@ -89,13 +117,14 @@ const Home = () => {
     function endGame() {
         setIsBlackTurn(false);
         setIsWhiteTurn(false);
-        zero.mutate.chess_games.update({ id: dbGame!.id, is_active: false });
+        mutators.chess_games.update({ id: dbGame!.id, is_active: false });
     }
 
     if (!dbGame) return <div>Loading...</div>;
 
     return (
         <main className="absolute top-0 pt-16 left-0 flex flex-col justify-center items-center bg-neutral-900 w-screen h-screen">
+            <Toaster />
             <Header />
             <div className="md:flex-row flex flex-col justify-center">
                 <div className="h-full max-w-[70vw] min-h-[70vh] aspect-square max-h-[70vh] border-2 border-gray-100 shadow-md ">
@@ -112,21 +141,19 @@ const Home = () => {
                 </div>
                 <div className="flex md:flex-col justify-between ml-4">
                     <div>
-                        <InGameProfile
-                            gameDuration={dbGame.black_time > 100 ? 300 : 60}
-                            time={dbGame.black_time}
+                        <ChessProfile
+                            time={blackTime}
+                            setTime={setBlackTime}
                             playerName={dbGame.black_player_name}
                             rating={1400}
                             isTimerActive={isBlackTurn}
-                            color="Black"
                             gameId={dbGame.id}
                         />
                     </div>
                     <div>
-                        <InGameProfile
-                            gameDuration={dbGame.black_time > 100 ? 300 : 60}
-                            time={dbGame.white_time}
-                            color="White"
+                        <ChessProfile
+                            time={whiteTime}
+                            setTime={setWhiteTime}
                             gameId={dbGame.id}
                             playerName={dbGame.white_player_name}
                             rating={2000}
@@ -137,6 +164,4 @@ const Home = () => {
             </div>
         </main>
     );
-};
-
-export default Home;
+}

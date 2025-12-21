@@ -17,7 +17,7 @@ export const mutators = defineMutators({
             await tx.mutate.chess_games.insert(args);
         }),
         update: defineMutator(
-            z.object({ id: z.string() }),
+            chessGamesSchema.partial(),
             async ({ tx, args }) => {
                 await tx.mutate.chess_games.update(args);
             }

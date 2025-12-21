@@ -2,10 +2,10 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { useNavigate } from "react-router-dom";
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 const SignIn = () => {
-    const navigate = useNavigate();
+    const router = useRouter();
 
     const [email, setEmail] = useState<string>("");
     const [password, setPassword] = useState<string>("");
@@ -17,7 +17,7 @@ const SignIn = () => {
             // body: JSON.stringify({ email, password }),
         });
         // TODO: authenticate
-        navigate("/matching");
+        router.push("/matching");
     }
     return (
         <Card className="w-full max-w-sm">

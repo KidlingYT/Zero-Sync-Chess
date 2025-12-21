@@ -1,5 +1,5 @@
 ﻿import { defineQueries, defineQuery } from "@rocicorp/zero";
-import { zql } from "../schema";
+import { zql } from "./schema";
 import { z } from "zod";
 
 export const queries = defineQueries({

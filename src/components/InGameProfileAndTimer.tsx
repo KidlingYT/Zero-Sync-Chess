@@ -1,19 +1,17 @@
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { useEffect, useState } from "react";
+import { Dispatch, SetStateAction, useEffect, useState } from "react";
 import { Separator } from "./ui/separator";
-import { useZero } from "@rocicorp/zero/react";
-import { Schema } from "schema";
 import { toast } from "sonner";
+import { mutators } from "mutators";
 
 interface ChessProfileProps {
     playerName: string;
     rating: number;
     isTimerActive: boolean;
     gameId: string;
-    color: "White" | "Black";
     time: number;
-    gameDuration: number;
+    setTime: Dispatch<SetStateAction<number>>;
 }
 
 export default function ChessProfile({
@@ -21,11 +19,10 @@ export default function ChessProfile({
     rating = 2850,
     isTimerActive = false,
     gameId = "",
-    color = "White",
-    time = 60,
-    gameDuration = 60,
+    time = 600,
+    setTime,
 }: ChessProfileProps) {
-    const zero = useZero<Schema>();
+    const initialTime = time;
     const [intervalId, setIntervalId] = useState<NodeJS.Timeout | null>(null);
 
     useEffect(() => {
@@ -38,23 +35,10 @@ export default function ChessProfile({
             const id = setInterval(() => {
                 const newTime = time > 0 ? time - 1 : 0;
 
-                switch (color) {
-                    case "White":
-                        zero.mutate.chess_games.update({
-                            id: gameId,
-                            white_time: newTime,
-                        });
-                        break;
-                    case "Black":
-                        zero.mutate.chess_games.update({
-                            id: gameId,
-                            black_time: newTime,
-                        });
-                        break;
-                }
+                setTime(newTime);
 
                 return newTime;
-            }, 1000);
+            }, 100);
 
             return () => clearInterval(id);
         }
@@ -64,14 +48,7 @@ export default function ChessProfile({
                 clearInterval(intervalId);
             }
         };
-    }, [
-        color,
-        gameId,
-        intervalId,
-        isTimerActive,
-        time,
-        zero.mutate.chess_games,
-    ]);
+    }, [gameId, intervalId, isTimerActive, time, setTime]);
 
     useEffect(() => {
         if (time <= 0) {
@@ -80,14 +57,15 @@ export default function ChessProfile({
                 setIntervalId(null);
             }
             toast("Timeout!");
-            zero.mutate.chess_games.update({ id: gameId, is_active: false });
+            mutators.chess_games.update({ id: gameId, is_active: false });
         }
-    }, [time, intervalId, zero.mutate.chess_games, gameId]);
+    }, [time, intervalId, gameId]);
 
     const formatTime = () => {
-        const minutes = Math.floor(time / 60);
-        const seconds = Math.floor(time % 60);
-        return `${minutes.toString().padStart(2, "0")}:${seconds.toString().padStart(2, "0")}`;
+        const minutes = Math.floor(time / 600);
+        const seconds = Math.floor(time % 600);
+        const tenths = Math.floor(time % 10);
+        return `${minutes.toString().padStart(2, "0")}:${seconds.toString().slice(0, 2).padStart(2, "0")}:${tenths.toString().padStart(1, "0")}`;
     };
 
     return (
@@ -121,7 +99,7 @@ export default function ChessProfile({
                     <div
                         className="bg-primary h-2.5 rounded-full transition-all duration-300 ease-in-out"
                         style={{
-                            width: `${(time / gameDuration) * 100}%`, // Adjusted for actual game duration
+                            width: `${(time / initialTime) * 100}%`, // Adjusted for actual game duration
                         }}
                     ></div>
                 </div>

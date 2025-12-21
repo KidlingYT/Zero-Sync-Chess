@@ -1,11 +1,13 @@
+"use client";
 import { Button } from "@/components/ui/button";
 import { CgProfile } from "react-icons/cg";
-import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { GiHeavyBullets } from "react-icons/gi";
 import { useSecurityUtilityStore } from "@/utilities/security";
+import { useRouter } from "next/navigation";
 
 const Header = () => {
+    const router = useRouter();
     const [isUserSignedIn, setIsUserSignedIn] = useState<boolean>(false);
     const { securityUtility } = useSecurityUtilityStore();
 
@@ -17,10 +19,9 @@ const Header = () => {
 
         getAndSetUser();
     }, [securityUtility]);
-    const navigate = useNavigate();
 
     function handleNavigate(path: string) {
-        navigate(path);
+        router.push(path);
     }
     return (
         <header className="w-full shadow-sm z-10 fixed top-0 left-0 bg-linear-to-b bg-none text-white">
@@ -37,7 +38,7 @@ const Header = () => {
                 </div>
                 <div>
                     <Button
-                        onClick={() => navigate("/matching")}
+                        onClick={() => handleNavigate("/matching")}
                         className="bg-blue-500! text-white hover:bg-blue-600! mr-4"
                     >
                         New Game
@@ -53,7 +54,7 @@ const Header = () => {
                     )}
                     {isUserSignedIn === true && (
                         <CgProfile
-                            onClick={() => navigate("/account")}
+                            onClick={() => handleNavigate("/account")}
                             size={30}
                             className="cursor-pointer"
                         />

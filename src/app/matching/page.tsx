@@ -1,10 +1,10 @@
+"use client";
 import Header from "@/components/Header";
 import { Button } from "@/components/ui/button";
-import { BLANKFEN } from "@/lib/chessGame";
-import { mutators } from "@/mutators";
-import { useConnectionState } from "@rocicorp/zero/react";
+import { BLANKFEN } from "@/utilities/lib/chessGame";
+import { mutators } from "mutators";
+import { useRouter } from "next/navigation";
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
 import { v4 as uuid } from "uuid";
 
 const BulletButton = ({
@@ -60,7 +60,7 @@ const BulletButton = ({
 };
 
 const MatchingPage = () => {
-    const navigate = useNavigate();
+    const router = useRouter();
     const [selectedMode, setSelectedMode] = useState<number | null>(null);
     const [isSearching, setIsSearching] = useState(false);
 
@@ -71,11 +71,11 @@ const MatchingPage = () => {
         setIsSearching(false);
     }
 
-    function startSearching() {
+    async function startSearching() {
         // todo api
-        const gameId = createGame(selectedMode ?? 60);
+        const gameId = await createGame(selectedMode ?? 60);
         stopSearching();
-        navigate(`/game/${gameId}`);
+        router.push(`/game/${gameId}`);
     }
 
     async function createGame(timeControl: number) {
@@ -86,8 +86,8 @@ const MatchingPage = () => {
             black_player_name: "AI",
             is_active: true,
             fen: BLANKFEN,
-            white_time: timeControl,
-            black_time: timeControl,
+            white_time: timeControl * 10,
+            black_time: timeControl * 10, // tenths
         });
         return id;
     }
@@ -95,7 +95,7 @@ const MatchingPage = () => {
     const bulletModes = [15, 30, 60];
 
     return (
-        <main className="absolute top-0 left-0 w-screen h-screen flex flex-col items-center bg-[url('../../../chess.jpg')] bg-no-repeat bg-cover bg-center bg-fixed">
+        <main className="absolute top-0 left-0 w-screen h-screen flex flex-col items-center bg-[url('/chess.jpg')] bg-no-repeat bg-cover bg-center bg-fixed">
             <Header />
             <div className="my-auto">
                 <h2 className=" text-3xl font-bold text-white">
