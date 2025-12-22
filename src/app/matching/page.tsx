@@ -2,6 +2,7 @@
 import Header from "@/components/Header";
 import { Button } from "@/components/ui/button";
 import { BLANKFEN } from "@/utilities/lib/chessGame";
+import { useZero } from "@rocicorp/zero/react";
 import { mutators } from "mutators";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
@@ -61,6 +62,7 @@ const BulletButton = ({
 
 const MatchingPage = () => {
     const router = useRouter();
+    const z = useZero();
     const [selectedMode, setSelectedMode] = useState<number | null>(null);
     const [isSearching, setIsSearching] = useState(false);
 
@@ -80,15 +82,17 @@ const MatchingPage = () => {
 
     async function createGame(timeControl: number) {
         const id = uuid();
-        await mutators.chess_games.create({
-            id: id,
-            white_player_name: "You",
-            black_player_name: "AI",
-            is_active: true,
-            fen: BLANKFEN,
-            white_time: timeControl * 10,
-            black_time: timeControl * 10, // tenths
-        });
+        await z.mutate(
+            mutators.chess_games.create({
+                id: id,
+                white_player_name: "You",
+                black_player_name: "AI",
+                is_active: true,
+                fen: BLANKFEN,
+                white_time: timeControl * 10,
+                black_time: timeControl * 10, // tenths
+            })
+        );
         return id;
     }
 
