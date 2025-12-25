@@ -10,9 +10,9 @@ import {
 } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { useZero } from "@rocicorp/zero/react";
 import { createClient } from "@supabase/supabase-js";
 import { toast } from "sonner";
+import { mutators } from "mutators";
 
 export function SignUp() {
     const [email, setEmail] = useState("");
@@ -21,13 +21,11 @@ export function SignUp() {
 
     const [isLoading, setIsLoading] = useState(false);
 
-    const z = useZero();
-
     const handleSubmit = async (event: FormEvent) => {
         event.preventDefault();
         setIsLoading(true);
         signUpNewUser();
-        z.mutate.users.insert({ email: email, password: password, name: name });
+        mutators.users.create({ email: email, password: password, name: name });
 
         setIsLoading(false);
     };
